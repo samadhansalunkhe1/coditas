@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { mapChildrenIntoArray } from '@angular/router/src/url_tree';
-import 'rxjs/add/operator/map';
-// import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class GithubUserInfoService {

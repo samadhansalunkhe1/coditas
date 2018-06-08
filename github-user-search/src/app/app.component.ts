@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { GithubUserInfoService } from './github-user-info.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { element } from 'protractor';
 
 @Component({
   selector: 'app-root',
