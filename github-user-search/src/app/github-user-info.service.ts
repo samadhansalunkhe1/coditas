@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { mapChildrenIntoArray } from '@angular/router/src/url_tree';
 import 'rxjs/add/operator/map';
+// import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class GithubUserInfoService {
 
-  constructor(private http: Http) { }
+  constructor(private httpClient: HttpClient) { }
 
-  fetchData(userName) {
-    this.http.get('https://api.github.com/search/users?q=' + userName).map(
-      (response) => response.json()
-    ).subscribe(
-      (data) => console.log(data)
-    );
+  searchGithubUser(userName) {
+    return this.httpClient.get('https://api.github.com/search/users?q=' + userName);
   }
 }

@@ -1,32 +1,56 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
+  <h3>Welcome to {{ title }}!</h3>
 </div>
 
 <div class="container">
   <div class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-          <select class="form-control" id="searchUser">
-            <option value="name">Sort By Name</option>
-            <option value="nameAZ">Name (A-Z)</option>
-            <option value="nameZA">Name (Z-A)</option>
-            <option value="nameAsc">Rank ASC</option>
-            <option value="nameDsc">Rank DSC</option>
-          </select>
-        </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <select class="form-control" id="searchUser">
+          <option value="">Sort By Name</option>
+          <option value="nameAZ">Name (A-Z)</option>
+          <option value="nameZA">Name (Z-A)</option>
+          <option value="nameAsc">Rank ASC</option>
+          <option value="nameDsc">Rank DSC</option>
+        </select>
       </div>
-      <div class="col-md-6">
-          <div class="input-group">
-            <input type="text" [(ngModel)]="githubUserName" class="form-control" placeholder="Search">
-            <div class="input-group-btn">
-              <button class="btn btn-default" (click) = "searchGithubUser()" type="submit">
-                <i class="fa fa-search" aria-hidden="true"></i>
-              </button>
-            </div>
+    </div>
+    <div class="col-md-4">
+      <form class="container" [formGroup] = "userSearchForm" (ngSubmit) = "searchGithubUser(userSearchForm.value)">
+        <div class="input-group">
+          <input type="text" class="form-control" name="githubUsername" placeholder="Search" formControlName="githubUsername">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </button>
           </div>
-      </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-2"></div>
   </div>
+</div>
+
+<div class="container" *ngIf="searchedUser">
+  <div class="row" *ngIf="searchedUserList?.length > 0 else invalidUserTemplate">
+      <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div *ngFor="let i of searchedUserList" class="media">
+                <div class="media-left">
+                  <img class="rounded" src="{{i.avatar_url}}" style="height: 55px;" alt="">
+                </div>
+                <div class="media-body">
+                  <h4>{{i.login}}</h4>
+                  <b>Profile URL:</b> <a href="{{i.html_url}}" target="_blank">{{i.html_url}}</a>
+                </div>
+                <div class="media-right">
+                    <input type="button" class="btn btn-info" (click) = "getGitUserRepos(i.login)" value="Details">
+                </div>
+            </div>
+        </div>
+      <div class="col-md-2"></div>
+  </div>
+  <ng-template #invalidUserTemplate>{{username}} is not registered on Github. Please enter valid username.</ng-template>
 </div>

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { GithubUserInfoService } from './github-user-info.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-root',
@@ -8,15 +10,36 @@ import { GithubUserInfoService } from './github-user-info.service';
 })
 export class AppComponent {
   title = 'Coditas github user search assignment';
-  githubUserName = '';
+  username;
+  searchedUser = false;
+  searchedUserList = [];
+  userSearchForm;
 
   constructor(private userDataService: GithubUserInfoService) {  }
 
-  searchGithubUser() {
-    if (this.githubUserName !== '') {
-      this.userDataService.fetchData(this.githubUserName);
-    }
+  ngOnInit() {
+      this.userSearchForm = new FormGroup({
+        githubUsername: new FormControl('')
+    });
   }
 
-  ngOnInit() {  }
+  searchGithubUser = function (user) {
+    if (user.githubUsername !== '') {
+      this.userDataService.searchGithubUser(user.githubUsername)
+      .subscribe(data => {
+        this.searchedUser = true;
+        this.username = user.githubUsername;
+        this.searchedUserList = data['items'];
+        console.log('user data', this.searchedUserList);
+      });
+    } else {
+      this.searchedUser = false;
+      this.searchedUserList = [];
+    }
+  };
+
+  // getGitUserRepos(event) {
+  //   alert('sam in ssss' + event);
+  //   console.log('sam in repos', event);
+  // }
 }
