@@ -13,12 +13,14 @@ export class AppComponent {
   searchedUser = false;
   searchedUserList = [];
   userSearchForm;
+  sortArgs: string;
 
   constructor(private userDataService: GithubUserInfoService) {  }
 
   ngOnInit() {
       this.userSearchForm = new FormGroup({
-        githubUsername: new FormControl('')
+        githubUsername: new FormControl(''),
+        githubUserSort: new FormControl('')
     });
   }
 
@@ -28,8 +30,19 @@ export class AppComponent {
       .subscribe(data => {
         this.searchedUser = true;
         this.username = user.githubUsername;
-        this.searchedUserList = data['items'];
-        console.log('user data', this.searchedUserList);
+         if (user.githubUserSort === 'nameAZ') {
+            this.sortArgs = 'nameAZ';
+         } else if (user.githubUserSort === 'nameZA') {
+            this.sortArgs = 'nameZA';
+         } else if (user.githubUserSort === 'nameAsc') {
+            this.sortArgs = 'nameAsc';
+         } else if (user.githubUserSort === 'nameDsc') {
+            this.sortArgs = 'nameDsc';
+         } else {
+          this.sortArgs = '';
+         }
+
+         this.searchedUserList = data['items'];
       });
     } else {
       this.searchedUser = false;

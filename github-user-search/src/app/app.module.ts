@@ -5,9 +5,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { GithubUserInfoService } from './github-user-info.service';
+import { SortPipe } from './app.sort';
 
 @NgModule({
   declarations: [
+    SortPipe,
     AppComponent
   ],
   imports: [

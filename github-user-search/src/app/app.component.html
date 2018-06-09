@@ -6,29 +6,29 @@
 <div class="container">
   <div class="row">
     <div class="col-md-2"></div>
-    <div class="col-md-4">
-      <div class="form-group">
-        <select class="form-control" id="searchUser">
-          <option value="">Sort By Name</option>
-          <option value="nameAZ">Name (A-Z)</option>
-          <option value="nameZA">Name (Z-A)</option>
-          <option value="nameAsc">Rank ASC</option>
-          <option value="nameDsc">Rank DSC</option>
-        </select>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <form class="container" [formGroup] = "userSearchForm" (ngSubmit) = "searchGithubUser(userSearchForm.value)">
-        <div class="input-group">
-          <input type="text" class="form-control" name="githubUsername" placeholder="Search" formControlName="githubUsername">
-          <div class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              <i class="fa fa-search" aria-hidden="true"></i>
-            </button>
-          </div>
+    <form class="container" [formGroup] = "userSearchForm" (ngSubmit) = "searchGithubUser(userSearchForm.value)">
+      <div class="col-md-4">
+        <div class="form-group">
+          <select class="form-control" name="githubUserSort" formControlName="githubUserSort">
+            <option value="">Sort By Name</option>
+            <option value="nameAZ">Name (A-Z)</option>
+            <option value="nameZA">Name (Z-A)</option>
+            <option value="nameAsc">Rank ASC</option>
+            <option value="nameDsc">Rank DSC</option>
+          </select>
         </div>
-      </form>
-    </div>
+      </div>
+      <div class="col-md-4">
+          <div class="input-group">
+            <input type="text" class="form-control" name="githubUsername" placeholder="Search" formControlName="githubUsername">
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="submit">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+      </div>
+    </form>
     <div class="col-md-2"></div>
   </div>
 </div>
@@ -37,7 +37,7 @@
   <div class="row" *ngIf="searchedUserList?.length > 0 else invalidUserTemplate">
       <div class="col-md-2"></div>
         <div class="col-md-8">
-            <div *ngFor="let i of searchedUserList" class="media">
+            <div *ngFor="let i of searchedUserList | sort:sortArgs" class="media">
                 <div class="media-left">
                   <img class="rounded" src="{{i.avatar_url}}" style="height: 55px;" alt="">
                 </div>
