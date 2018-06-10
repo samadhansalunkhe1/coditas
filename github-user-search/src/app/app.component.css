@@ -1,0 +1,19 @@
+.img-rounded {
+    height: 55px;
+    border-radius: 30px;
+}
+.loginName {
+    font-size: 23px;
+}
+.repoUserList{
+    background-color: #d8d6d6;  
+}
+.repoInfo {
+    background-color: #f1f1edfb;  
+}
+.repoDetailsBtn {
+    margin-top: 12px;
+}
+.pagination {
+    float: right;
+}

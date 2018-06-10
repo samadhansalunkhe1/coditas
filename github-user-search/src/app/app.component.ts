@@ -9,11 +9,15 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class AppComponent {
   title = 'Coditas github user search assignment';
-  username;
+  invalidUname;
+  userId = '';
   searchedUser = false;
   searchedUserList = [];
   userSearchForm;
-  sortArgs: string;
+  searchedUserListCount;
+  sortArgs = '';
+  githubUserRepos = [];
+  emptyRepoMessage = '';
 
   constructor(private userDataService: GithubUserInfoService) {  }
 
@@ -29,20 +33,14 @@ export class AppComponent {
       this.userDataService.searchGithubUser(user.githubUsername)
       .subscribe(data => {
         this.searchedUser = true;
-        this.username = user.githubUsername;
-         if (user.githubUserSort === 'nameAZ') {
-            this.sortArgs = 'nameAZ';
-         } else if (user.githubUserSort === 'nameZA') {
-            this.sortArgs = 'nameZA';
-         } else if (user.githubUserSort === 'nameAsc') {
-            this.sortArgs = 'nameAsc';
-         } else if (user.githubUserSort === 'nameDsc') {
-            this.sortArgs = 'nameDsc';
-         } else {
-          this.sortArgs = '';
-         }
-
-         this.searchedUserList = data['items'];
+        /* Set searched username to show invalid username message */
+        this.invalidUname = user.githubUsername;
+        /* Set selected sort option to sortArgs variable */
+        this.sortArgs = user.githubUserSort;
+        /* Set searched users list array */
+        this.searchedUserList = data['items'];
+        this.searchedUserListCount = data['items'].length;
+        console.log('result', this.searchedUserList);
       });
     } else {
       this.searchedUser = false;
@@ -50,8 +48,22 @@ export class AppComponent {
     }
   };
 
-  // getGitUserRepos(event) {
-  //   alert('sam in ssss' + event);
-  //   console.log('sam in repos', event);
-  // }
+  getGithubUserRepos = function (username, event) {
+      this.userId = event.target.id;
+      this.githubUserRepos = [];
+      this.emptyRepoMessage = '';
+      this.userDataService.getGithubUserRepos(username)
+      .subscribe(data => {
+        this.githubUserRepos = data;
+        if (this.githubUserRepos.length > 0) {
+          if (event.target.value === 'Details') {
+            event.target.value = 'Collapse';
+          } else {
+            event.target.value = 'Details';
+          }
+        } else {
+          this.emptyRepoMessage = 'Not any repository created on Gitub';
+        }
+      });
+  };
 }

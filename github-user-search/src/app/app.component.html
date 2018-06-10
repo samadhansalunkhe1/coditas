@@ -5,8 +5,8 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-2"></div>
     <form class="container" [formGroup] = "userSearchForm" (ngSubmit) = "searchGithubUser(userSearchForm.value)">
+    <div class="col-md-2"></div>
       <div class="col-md-4">
         <div class="form-group">
           <select class="form-control" name="githubUserSort" formControlName="githubUserSort">
@@ -28,29 +28,45 @@
             </div>
           </div>
       </div>
-    </form>
     <div class="col-md-2"></div>
+  </form>
   </div>
 </div>
 
 <div class="container" *ngIf="searchedUser">
-  <div class="row" *ngIf="searchedUserList?.length > 0 else invalidUserTemplate">
+  <div class="row" *ngIf="searchedUserListCount > 0 else invalidUserTemplate">
       <div class="col-md-2"></div>
-        <div class="col-md-8">
-            <div *ngFor="let i of searchedUserList | sort:sortArgs" class="media">
+        <div class="col-md-8 repoUserList">
+            <h5>Total Results:{{searchedUserListCount}}</h5>
+            <div *ngFor="let user of searchedUserList | sort:sortArgs | paginate: { itemsPerPage: 6, currentPage: p }" class="media repoInfo">
                 <div class="media-left">
-                  <img class="rounded" src="{{i.avatar_url}}" style="height: 55px;" alt="">
+                  <img class="img-rounded" src="{{user.avatar_url}}" alt="">
                 </div>
                 <div class="media-body">
-                  <h4>{{i.login}}</h4>
-                  <b>Profile URL:</b> <a href="{{i.html_url}}" target="_blank">{{i.html_url}}</a>
+                  <label class="loginName">{{user.login}}</label><br>
+                  <b>Profile URL: </b><a href="{{user.html_url}}" target="_blank">{{user.html_url}}</a>
+                  <div *ngIf="userId == user.id" id="collapse-{{user.id}}" class="collapse">
+                    <div class="row" *ngIf="githubUserRepos?.length > 0 else emptyRepoTemplate">
+                      <div *ngFor="let repos of githubUserRepos">
+                        <div class="col-md-6">
+                        <h4>{{repos.name}}</h4>
+                        </div>
+                        <div class="col-md-6">
+                          <h4>{{repos.language}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                    <ng-template #emptyRepoTemplate>{{emptyRepoMessage}}</ng-template>
+                  </div>
                 </div>
-                <div class="media-right">
-                    <input type="button" class="btn btn-info" (click) = "getGitUserRepos(i.login)" value="Details">
+                <div class="media-left">
+                    <input type="button" id="{{user.id}}" class="btn btn-info repoDetailsBtn" data-toggle="collapse" [attr.data-target]="'#collapse-' + user.id" 
+                    (click) = "getGithubUserRepos(user.login, $event)" value="Details">
                 </div>
             </div>
+            <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>
         </div>
       <div class="col-md-2"></div>
   </div>
-  <ng-template #invalidUserTemplate>{{username}} is not registered on Github. Please enter valid username.</ng-template>
+  <ng-template #invalidUserTemplate>{{invalidUname}} is not registered on Github. Please enter valid username.</ng-template>
 </div>
