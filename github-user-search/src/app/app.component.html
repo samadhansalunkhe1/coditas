@@ -1,67 +1,69 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h3>Welcome to {{ title }}!</h3>
-</div>
-
 <div class="container">
-  <div class="row">
-    <form class="container" [formGroup] = "userSearchForm" (ngSubmit) = "searchGithubUser(userSearchForm.value)">
+  <div class="row searchBox">
+  <div class="heading"><h3>Welcome to {{ title }}!</h3></div>
     <div class="col-md-2"></div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <select class="form-control" name="githubUserSort" formControlName="githubUserSort">
-            <option value="">Sort By Name</option>
-            <option value="nameAZ">Name (A-Z)</option>
-            <option value="nameZA">Name (Z-A)</option>
-            <option value="nameAsc">Rank ASC</option>
-            <option value="nameDsc">Rank DSC</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-md-4">
-          <div class="input-group">
-            <input type="text" class="form-control" name="githubUsername" placeholder="Search" formControlName="githubUsername">
-            <div class="input-group-btn">
-              <button class="btn btn-default" type="submit">
-                <i class="fa fa-search" aria-hidden="true"></i>
-              </button>
-            </div>
+      <form class="container" [formGroup] = "userSearchForm" (ngSubmit) = "searchGithubUser(userSearchForm.value)">
+        <div class="col-md-4">
+          <div class="form-group">
+            <select class="form-control" name="githubUserSort" formControlName="githubUserSort">
+              <option value="">Sort By Name</option>
+              <option value="nameAZ">Name (A-Z)</option>
+              <option value="nameZA">Name (Z-A)</option>
+              <option value="nameAsc">Rank ASC</option>
+              <option value="nameDsc">Rank DSC</option>
+            </select>
           </div>
-      </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+              <input type="text" class="form-control" name="githubUsername" placeholder="Search" formControlName="githubUsername">
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+        </div>
+      </form>
     <div class="col-md-2"></div>
-  </form>
   </div>
 </div>
 
+<!-- Show user info list view - Name, Profile URL & Repository data -->
 <div class="container" *ngIf="searchedUser">
-  <div class="row" *ngIf="searchedUserListCount > 0 else invalidUserTemplate">
+  <div class="row repoUserList" *ngIf="searchedUserListCount > 0 else invalidUserTemplate">
       <div class="col-md-2"></div>
-        <div class="col-md-8 repoUserList">
+        <div class="col-md-8">
             <h5>Total Results:{{searchedUserListCount}}</h5>
-            <div *ngFor="let user of searchedUserList | sort:sortArgs | paginate: { itemsPerPage: 6, currentPage: p }" class="media repoInfo">
+            <div *ngFor="let user of searchedUserList | sort:sortArgs | paginate: { itemsPerPage: 5, currentPage: p }" class="media repoInfo">
                 <div class="media-left">
                   <img class="img-rounded" src="{{user.avatar_url}}" alt="">
                 </div>
                 <div class="media-body">
                   <label class="loginName">{{user.login}}</label><br>
                   <b>Profile URL: </b><a href="{{user.html_url}}" target="_blank">{{user.html_url}}</a>
-                  <div *ngIf="userId == user.id" id="collapse-{{user.id}}" class="collapse">
-                    <div class="row" *ngIf="githubUserRepos?.length > 0 else emptyRepoTemplate">
-                      <div *ngFor="let repos of githubUserRepos">
-                        <div class="col-md-6">
-                        <h4>{{repos.name}}</h4>
-                        </div>
-                        <div class="col-md-6">
-                          <h4>{{repos.language}}</h4>
-                        </div>
+
+                  <!-- Show 2 repos default  -->
+                  <div *ngFor="let repos of user.repos; let i = index">
+                    <div *ngIf="i <= 1">
+                      <div class="col-md-6"><h4>{{repos.name}}</h4></div>
+                      <div class="col-md-6"><h4>{{repos.language}}</h4></div>
+                    </div>
+                  </div>
+
+                  <!-- Show remaining repos in collapse view  -->
+                  <div id="collapse-{{user.id}}" class="collapse">
+                    <div *ngFor="let moreRepos of user.repos; let j = index">
+                      <div *ngIf="j > 1">
+                        <div class="col-md-6"><h4>{{moreRepos.name}}</h4></div>
+                        <div class="col-md-6"><h4>{{moreRepos.language}}</h4></div>
                       </div>
                     </div>
-                    <ng-template #emptyRepoTemplate>{{emptyRepoMessage}}</ng-template>
                   </div>
                 </div>
                 <div class="media-left">
-                    <input type="button" id="{{user.id}}" class="btn btn-info repoDetailsBtn" data-toggle="collapse" [attr.data-target]="'#collapse-' + user.id" 
-                    (click) = "getGithubUserRepos(user.login, $event)" value="Details">
+                  <input type="button" id="{{user.login}}" class="btn btn-info repoDetailsBtn" data-toggle="collapse" [attr.data-target]="'#collapse-' + user.id" 
+                  value="Details" (click)="changeCollapseBtnText($event);">
                 </div>
             </div>
             <pagination-controls (pageChange)="p = $event" class="pagination"></pagination-controls>

@@ -10,14 +10,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class AppComponent {
   title = 'Coditas github user search assignment';
   invalidUname;
-  userId = '';
   searchedUser = false;
   searchedUserList = [];
   userSearchForm;
   searchedUserListCount;
   sortArgs = '';
-  githubUserRepos = [];
-  emptyRepoMessage = '';
 
   constructor(private userDataService: GithubUserInfoService) {  }
 
@@ -28,6 +25,7 @@ export class AppComponent {
     });
   }
 
+  /* Search and maintain github user info */
   searchGithubUser = function (user) {
     if (user.githubUsername !== '') {
       this.userDataService.searchGithubUser(user.githubUsername)
@@ -40,7 +38,15 @@ export class AppComponent {
         /* Set searched users list array */
         this.searchedUserList = data['items'];
         this.searchedUserListCount = data['items'].length;
-        console.log('result', this.searchedUserList);
+
+        /* Fetch users repos and append in searched user data array */
+        data['items'].forEach(item => {
+          item.repos = [];
+          this.userDataService.getGithubUserRepos(item.login).subscribe((result) => {
+            item.repos = result;
+          });
+        });
+        console.log('All data', data);
       });
     } else {
       this.searchedUser = false;
@@ -48,22 +54,12 @@ export class AppComponent {
     }
   };
 
-  getGithubUserRepos = function (username, event) {
-      this.userId = event.target.id;
-      this.githubUserRepos = [];
-      this.emptyRepoMessage = '';
-      this.userDataService.getGithubUserRepos(username)
-      .subscribe(data => {
-        this.githubUserRepos = data;
-        if (this.githubUserRepos.length > 0) {
-          if (event.target.value === 'Details') {
-            event.target.value = 'Collapse';
-          } else {
-            event.target.value = 'Details';
-          }
-        } else {
-          this.emptyRepoMessage = 'Not any repository created on Gitub';
-        }
-      });
-  };
+  /* Update collapse button name */
+  changeCollapseBtnText(event) {
+    if (event.target.value === 'Details') {
+      event.target.value = 'Collapse';
+    } else {
+      event.target.value = 'Details';
+    }
+  }
 }
