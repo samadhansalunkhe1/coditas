@@ -43,6 +43,7 @@
                   <label class="loginName">{{user.login}}</label><br>
                   <b>Profile URL: </b><a href="{{user.html_url}}" target="_blank">{{user.html_url}}</a>
 
+                  <div *ngIf="!user.repos"><h4>No repository available on Github.</h4></div>
                   <!-- Show 2 repos default  -->
                   <div *ngFor="let repos of user.repos; let i = index">
                     <div *ngIf="i <= 1">
@@ -61,7 +62,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="media-left">
+                <div class="media-left" *ngIf="user.repos?.length > 2">
                   <input type="button" id="{{user.login}}" class="btn btn-info repoDetailsBtn" data-toggle="collapse" [attr.data-target]="'#collapse-' + user.id" 
                   value="Details" (click)="changeCollapseBtnText($event);">
                 </div>

@@ -41,9 +41,11 @@ export class AppComponent {
 
         /* Fetch users repos and append in searched user data array */
         data['items'].forEach(item => {
-          item.repos = [];
           this.userDataService.getGithubUserRepos(item.login).subscribe((result) => {
-            item.repos = result;
+            if (result.length) {
+              item.repos = [];
+              item.repos = result;
+            }
           });
         });
         console.log('All data', data);
