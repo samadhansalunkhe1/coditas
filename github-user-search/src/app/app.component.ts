@@ -8,7 +8,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Coditas github user search assignment';
+  title = 'Github user search assignment';
   invalidUname;
   searchedUser = false;
   searchedUserList = [];
