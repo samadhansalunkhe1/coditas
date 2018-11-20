@@ -31,10 +31,13 @@ export class AppComponent {
       this.userDataService.searchGithubUser(user.githubUsername)
       .subscribe(data => {
         this.searchedUser = true;
+
         /* Set searched username to show invalid username message */
         this.invalidUname = user.githubUsername;
+
         /* Set selected sort option to sortArgs variable */
         this.sortArgs = user.githubUserSort;
+
         /* Set searched users list array */
         this.searchedUserList = data['items'];
         this.searchedUserListCount = data['items'].length;
